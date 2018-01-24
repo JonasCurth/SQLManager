@@ -1,0 +1,103 @@
+﻿<shared:ChromelessWindow x:Class="SQLogin.View.LoginView"
+                         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                         xmlns:local="clr-namespace:SQLogin.View"
+                         xmlns:shared="http://schemas.syncfusion.com/wpf"
+                         mc:Ignorable="d"
+                         Title="Serveranmeldung" 
+                         TitleBarBackground="#FF333333"
+                         TitleBarForeground="White"
+                         Background="#F0F0F0"
+                         Foreground="Black"
+                         ResizeBorderBrush="#FF333333"
+                         TitleFontSize="14"
+                         UseNativeChrome="True"
+                         SizeToContent="Height"
+                         Width="400"
+                         ResizeMode="NoResize"
+                         WindowStartupLocation="CenterScreen">
+    <shared:ChromelessWindow.Resources>
+
+        <BooleanToVisibilityConverter x:Key="Bool2VisibilityConverter"/>
+
+        <Style TargetType="TextBox">
+            <Style.Setters>
+                <Setter Property="Height" Value="22"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+            </Style.Setters>
+        </Style>
+        <Style TargetType="PasswordBox" x:Name="PasswordBoxStyle">
+            <Style.Setters>
+                <Setter Property="Height" Value="22"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+            </Style.Setters>
+        </Style>
+    </shared:ChromelessWindow.Resources>
+
+    <DockPanel>
+        <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        DockPanel.Dock="Bottom"
+                        Margin="10 10 0 0">
+
+            <Button Content="Abbrechen"
+                        Width="100"
+                        Margin="5"
+                    Click="OnAbortClick"
+                    />
+            <Button Content="Verbinden"
+                        Width="100"
+                        Margin="5" 
+                    Command="{Binding ConnectCommand}"
+                    Click="OnLoginClick"
+                    />
+
+        </StackPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Margin="0 20"
+                        Grid.Column="1">
+                <TextBlock Text="Server:"/>
+                <TextBox Text="{Binding Connection.Servername, UpdateSourceTrigger=PropertyChanged}"/>
+                <CheckBox x:Name="SQLAuthentification" 
+                          Content="SQL-Authentifizierung nutzen?"
+                          Margin="0 5 0 0"
+                          IsChecked="{Binding Connection.IsSQLAuth, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <StackPanel Visibility="{Binding Connection.IsSQLAuth, UpdateSourceTrigger=PropertyChanged, 
+                                                 Converter={StaticResource Bool2VisibilityConverter}}">
+                    <TextBlock Text="Nutzername:" 
+                           Margin="0 5 0 0"/>
+                    <TextBox Text="{Binding Connection.Username, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <TextBlock Text="Passwort:" 
+                           Margin="0 5 0 0"/>
+                    <PasswordBox x:Name="Password" PasswordChanged="OnPasswordChanged"/>
+                </StackPanel>
+
+                <Button Content="Verbindung testen"
+                        Margin="0 5 0 0"
+                        Command="{Binding TestConnectionCommand}"/>
+
+
+
+                <TextBlock Text="Datenbank:" 
+                           Margin="0 5 0 0"/>
+                <ComboBox ItemsSource="{Binding Connection.Databases}" 
+                          IsEnabled="{Binding IsEnabled}"
+                          SelectedItem="{Binding Connection.Database, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+
+        </Grid>
+
+    </DockPanel>
+</shared:ChromelessWindow>
